@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser') 
 const connection = require('./src/config/dbConfig');
 const { register, login, userInfo } = require('./src/controllers/authControllers.js');
-const { getMenus, saveMenu, getMenuListAll } = require('./src/controllers/settings/menuControllers.js');
+const { getMenus, saveMenu, getMenuListAll, menuDetail, deleteMenu } = require('./src/controllers/settings/menuControllers.js');
 const { getAdminMenus } = require('./src/controllers/system/adminMenuControllers.js');
 const auth = require('./src/middlewares/auth');
 const userToken = require('./src/middlewares/token');
@@ -49,6 +49,12 @@ app.post('/grid/settings/menuListAll', auth, userToken, getMenuListAll);
 
 // 添加菜单
 app.post('/grid/settings/saveMenu', auth, userToken, saveMenu);
+
+// 菜单删除
+app.post('/grid/settings/delMenu', auth, userToken, deleteMenu);
+
+// 菜单详情
+app.post('/grid/settings/menuDetail', auth, userToken, menuDetail);
 
 // 系统菜单
 app.post('/grid/system/adminMenuList', auth, userToken, getAdminMenus);

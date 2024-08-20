@@ -14,7 +14,9 @@ exports.register = async (req, res) => {
   try {
     // 检查用户是否已经存在
     connection.query('SELECT * FROM users WHERE name = ?', [username], async (err, results) => {
-      if (err) throw err;
+      if (err) {
+        return sendResponse(res, 500, '服务器错误');
+      }
       if (results.length > 0) {
         return sendResponse(res, 400, '用户已存在')
       }
@@ -25,7 +27,9 @@ exports.register = async (req, res) => {
 
       // 插入新用户到数据库
       connection.query('INSERT INTO users (name, password) VALUES (?, ?)', [username, hashedPassword], (err, results) => {
-        if (err) throw err;
+        if (err) {
+        return sendResponse(res, 500, '服务器错误');
+      }
         return sendResponse(res, 200, '用户注册成功')
       });
     });
@@ -46,9 +50,11 @@ exports.login = async (req, res) => {
   try {
     // 检查用户是否存在
     connection.query('SELECT * FROM users WHERE name = ?', [username], async (err, results) => {
-      if (err) throw err;
+      if (err) {
+        return sendResponse(res, 500, '服务器错误');
+      }
       if (results.length === 0) {
-        return sendResponse(res, 400, '无效的凭据')
+        return sendResponse(res, 400, '用户不存在')
       }
 
       const user = results[0];
@@ -56,7 +62,7 @@ exports.login = async (req, res) => {
       // 验证密码
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return sendResponse(res, 400, '无效的凭据')
+        return sendResponse(res, 400, '账号或密码错误')
       }
 
       // 生成 JWT
@@ -71,7 +77,9 @@ exports.login = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: '1h' },
         (err, token) => {
-          if (err) throw err;
+          if (err) {
+            return sendResponse(res, 500, '服务器错误');
+          }
           sendResponse(res, 200, '登录成功', { token }, token)
         }
       );
@@ -88,7 +96,7 @@ exports.userInfo = async (req, res) => {
     const userId = req.user.id;
 
     // 根据用户id查询数据库获取用户信息
-    const query = 'SELECT id, name, avatar FROM users WHERE id = ?';
+    const query = 'SELECT id, name, avatar, role_id, role_name FROM users WHERE id = ?';
     connection.query(query, [userId], (err, results) => {
       if (err) {
         return sendResponse(res, 500, '服务器错误');
