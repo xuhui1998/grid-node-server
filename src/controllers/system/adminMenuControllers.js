@@ -39,6 +39,13 @@ exports.getAdminMenus = (req, res) => {
       menu.updated_at = dayjs(menu.updated_at).format('YYYY-MM-DD HH:mm:ss');
     });
 
+    tree.sort((a, b) => a.meta.order - b.meta.order);
+    tree.forEach((item) => {
+      if (item.children && item.children.length > 0) {
+        item.children.sort((a, b) => a.meta.order - b.meta.order);
+      }
+    })
+
     // 返回结果，不包含 total
     sendResponse(res, 200, 'success', tree);
   });

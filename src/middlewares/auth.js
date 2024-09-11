@@ -10,10 +10,10 @@ const auth = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { user } = decoded;
-    req.user = { id: user.id }; // 假设 JWT 中有 userId
+    req.user = { id: user.id };
     next();
   } catch (err) {
-    return sendResponse(res, 401, '登录状态已过期')
+    return sendResponse(res, 401, '登录状态已过期，请重新登录')
   }
 };
 

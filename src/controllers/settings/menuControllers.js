@@ -4,8 +4,8 @@ const dayjs = require('dayjs');
 
 // 菜单列表
 exports.getMenus = (req, res) => {
-  const limit = parseInt(req.query.limit) || 10; // 每页数量
-  const offset = parseInt(req.query.offset) || 0; // 偏移量
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = parseInt(req.query.offset) || 0;
 
   const totalQuery = 'SELECT COUNT(*) AS total FROM grid_menus'; // 查询总数
   const menusQuery = 'SELECT * FROM grid_menus LIMIT ? OFFSET ?'; // 查询菜单项
@@ -50,20 +50,28 @@ exports.getMenus = (req, res) => {
         menu.updated_time = dayjs(menu.updated_time).format('YYYY-MM-DD HH:mm:ss');
       });
 
+      tree.sort((a, b) => a.meta.order - b.meta.order);
+      tree.forEach((item) => {
+        if (item.children && item.children.length > 0) {
+          item.children.sort((a, b) => a.meta.order - b.meta.order);
+        }
+      })
+
       // 过滤掉 children 为空的菜单项
-      // const filterEmptyChildren = (menuList) => {
-      //   return menuList.map(menu => {
-      //     if (menu.children.length === 0) {
-      //       delete menu.children; // 删除 children 字段
-      //     } else {
-      //       menu.children = filterEmptyChildren(menu.children); // 递归处理子菜单
-      //     }
-      //     return menu;
-      //   });
-      // };
+      const filterEmptyChildren = (menuList) => {
+        if (!menuList) return;
+        return menuList.map(menu => {
+          if (menu.children && menu.children.length === 0) {
+            delete menu.children; // 删除 children 字段
+          } else {
+            menu.children = filterEmptyChildren(menu.children); // 递归处理子菜单
+          }
+          return menu;
+        });
+      };
 
       // 返回结果
-      sendResponse(res, 200, 'success', { total, list: tree })
+      sendResponse(res, 200, 'success', { total, list: filterEmptyChildren(tree) })
     });
   });
 };
