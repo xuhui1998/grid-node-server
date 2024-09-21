@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const connection = require('./src/config/dbConfig');
 const { register, login, userInfo } = require('./src/controllers/authControllers.js');
 const { getMenus, saveMenu, getMenuListAll, menuDetail, deleteMenu } = require('./src/controllers/settings/menuControllers.js');
+const { getWeather } = require('./src/controllers/api/index.js');
 const { getAdminMenus } = require('./src/controllers/system/adminMenuControllers.js');
 const auth = require('./src/middlewares/auth');
 const userToken = require('./src/middlewares/token');
@@ -58,6 +59,9 @@ app.post('/grid/settings/menuDetail', auth, userToken, menuDetail);
 
 // 系统菜单
 app.post('/grid/system/adminMenuList', auth, userToken, getAdminMenus);
+
+// 天气
+app.post('/grid/api/weather', getWeather);
 
 // 启动服务器
 const PORT = process.env.SERVER_PORT || 3000;
