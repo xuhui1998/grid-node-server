@@ -9,6 +9,7 @@
   "author": "xuhui",
   "license": "ISC",
   "dependencies": {
+    "@bytedance-ad/mui-vue3": "^3.0.61",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",

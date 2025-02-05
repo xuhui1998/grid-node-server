@@ -1,5 +1,4 @@
 const sendResponse = require('../../../utils')
-const connection = require('../../config/dbConfig')
 const axios = require('axios');
 
 const thirdPartyWeatherApiUrl = 'https://api.vvhan.com/api/weather';

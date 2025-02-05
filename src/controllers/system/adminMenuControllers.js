@@ -35,8 +35,8 @@ exports.getAdminMenus = (req, res) => {
       }
       menu.meta = JSON.parse(menu.meta);
       // 格式化日期
-      menu.created_at = dayjs(menu.created_at).format('YYYY-MM-DD HH:mm:ss');
-      menu.updated_at = dayjs(menu.updated_at).format('YYYY-MM-DD HH:mm:ss');
+      menu.created_time = dayjs(menu.created_time).format('YYYY-MM-DD HH:mm:ss');
+      menu.updated_time = dayjs(menu.updated_time).format('YYYY-MM-DD HH:mm:ss');
     });
 
     tree.sort((a, b) => a.meta.order - b.meta.order);
